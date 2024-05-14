@@ -4,5 +4,63 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
+    depends_on:
+      - wordpress
     ports:
       - 443:443
+    expose:
+      - 9000
+    volumes:
+      - volume_wordpress:/var/www/html
+    restart: always
+    networks:
+      - my_net
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    env_file: .env
+    # ports:
+    #   - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - volume_mariadb:/var/lib/mysql
+    restart: always
+    networks:
+      - my_net
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    env_file: .env
+    depends_on:
+      - mariadb
+    # ports:
+    #   - 9000:9000
+    #   - 3306:3306
+    expose:
+      - 9000
+      - 3306
+    volumes:
+      - volume_wordpress:/var/www/html
+    restart: always
+    networks:
+      - my_net
+
+networks:
+  my_net:
+    name: my_net
+
+volumes:
+  volume_wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./volumes/wordpress
+      o: bind
+
+  volume_mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./volumes/mariadb
+      o: bind
