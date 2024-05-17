@@ -1,5 +1,12 @@
-#TODO Check if db is up instead of just waiting 10 seconds
-sleep 10
+# # Wait for MySQL to start
+while true; do
+    echo "waiting for MySQL to start"
+    mariadb -h $SQL_HOSTNAME -u $SQL_USER -p$SQL_PASSWORD -e "SELECT 1" > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        break
+    fi
+    sleep 0.5
+done
 
 cd /var/www/html
 
@@ -39,10 +46,8 @@ wp --allow-root user create $WP_USER $WP_USER_EMAIL \
     --user_pass=$WP_USER_PASSWORD \
     --path=/var/www/html
 
-echo "Theme"
-# wp --allow-root theme install twentytwenty --activate --path=/var/www/html
 
-/usr/sbin/php-fpm7.4 -F
+exec /usr/sbin/php-fpm7.4 -F
 
 # Keep the container running
 # tail -f /dev/null

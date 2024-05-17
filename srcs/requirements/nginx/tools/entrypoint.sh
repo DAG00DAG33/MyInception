@@ -1,4 +1,4 @@
-nginx -g "daemon off;"
+exec nginx -g "daemon off;"
 
 # Keep the container running
-tail -f /dev/null
+# tail -f /dev/null

@@ -1,9 +1,9 @@
-version: '3'
-
 services:
   nginx:
     container_name: nginx
-    build: ./requirements/nginx
+    image: nginx
+    build: 
+      context: ./requirements/nginx
     depends_on:
       - wordpress
     ports:
@@ -17,10 +17,10 @@ services:
       - my_net
   mariadb:
     container_name: mariadb
-    build: ./requirements/mariadb
+    image: mariadb
+    build: 
+      context: ./requirements/mariadb
     env_file: .env
-    # ports:
-    #   - 3306:3306
     expose:
       - 3306
     volumes:
@@ -30,13 +30,12 @@ services:
       - my_net
   wordpress:
     container_name: wordpress
-    build: ./requirements/wordpress
+    image: wordpress
+    build:
+      context: ./requirements/wordpress
     env_file: .env
     depends_on:
       - mariadb
-    # ports:
-    #   - 9000:9000
-    #   - 3306:3306
     expose:
       - 9000
       - 3306
@@ -55,12 +54,12 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ./volumes/wordpress
+      device: '/home/digarcia/data/wordpress'
       o: bind
 
   volume_mariadb:
     driver: local
     driver_opts:
       type: none
-      device: ./volumes/mariadb
+      device: '/home/digarcia/data/mariadb'
       o: bind
