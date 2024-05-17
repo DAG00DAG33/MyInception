@@ -42,7 +42,7 @@ wp --allow-root core install\
   
 echo "Creating extra user"
 wp --allow-root user create $WP_USER $WP_USER_EMAIL \
-    --role=author \
+    --role=editor \
     --user_pass=$WP_USER_PASSWORD \
     --path=/var/www/html
 
